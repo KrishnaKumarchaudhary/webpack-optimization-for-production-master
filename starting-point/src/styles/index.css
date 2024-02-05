@@ -100,10 +100,10 @@ h1 {
   margin-right: 10px;
   cursor: pointer;
   visibility: hidden;
-  background: url("../../images/delete.png") center no-repeat;
+  /* background: url("../../images/delete.png") center no-repeat; */
   background-size: 90%;
 }
 
 .todolist-wrapper .todo-list li:hover .delete {
-  visibility: visible;
+  /* visibility: visible; */
 }

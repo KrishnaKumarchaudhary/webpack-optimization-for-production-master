@@ -1,3 +1,4 @@
+import "../styles/index.css";
 import {
   newTodoEventHandler,
   onLoadEventHandler,
@@ -18,3 +19,5 @@ document.addEventListener("click", function (event) {
     toggleTodoEventListener(event);
   }
 });
+
+// console.log("Krishna");
