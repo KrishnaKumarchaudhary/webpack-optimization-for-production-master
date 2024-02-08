@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const config = {
   entry: "./src/js/index.js",
   output: {
@@ -28,10 +29,17 @@ const config = {
       filename: "index.html",
       template: "src/template.html",
     }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "images/motivational-pictures/*.*",
+        },
+      ],
+    }),
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
         "**/*",
-        path.join(process.cwd(), "build/**/*"), // this for cleaning build folder 
+        path.join(process.cwd(), "build/**/*"), // this for cleaning build folder
       ],
     }),
   ],
