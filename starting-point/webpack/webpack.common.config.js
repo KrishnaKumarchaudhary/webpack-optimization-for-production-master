@@ -12,6 +12,9 @@ const config = {
     //   keep: /\.css/,
     // },
   },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
   module: {
     rules: [
       {
@@ -21,6 +24,13 @@ const config = {
             loader: "html-loader",
           },
         ],
+      },
+      {
+        test: /\.(js|ts)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
       },
     ],
   },
