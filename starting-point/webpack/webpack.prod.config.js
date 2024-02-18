@@ -5,6 +5,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const path = require("path");
 const glob = require("glob");
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = merge(common, {
   mode: "production",
@@ -27,6 +28,82 @@ module.exports = merge(common, {
         },
       }),
     ],
+    runtimeChunk: "single",
+    splitChunks: {
+      // this is first technique to split code
+      //   cacheGroups: {
+      //     jquery: {
+      //       test: /[\\/]node_modules[\\/]jquery[\\/]/,
+      //       chunks: "initial",
+      //       name: "jquery",
+      //     },
+      //     bootstrap: {
+      //       test: /[\\/]node_modules[\\/]bootstrap[\\/]/,
+      //       chunks: "initial",
+      //       name: "bootstrap",
+      //     },
+      //   },
+
+      // this is second technique to split the code
+      //   chunks: "all",
+      //   maxSize: 140000,
+      //   minSize: 50000,
+      //   name(module, chunks, cacheGroupKey) {
+      //     const pathSeparator = module.identifier().includes("\\") ? "\\" : "/";
+      //     const filePathAsArray = module.identifier().split(pathSeparator);
+      //     return filePathAsArray[filePathAsArray.length - 1];
+      //   },
+
+      // This is third approch to split the code
+      //   chunks: "all",
+      //   maxSize: Infinity,
+      //   minSize: 0,
+      //   cacheGroups: {
+      //     node_modules: {
+      //       test: /[\\/]node_modules[\\/]/,
+      //       //name: "node_modules",
+      //       name(module) {
+      //         const packageName = module.context.match(
+      //           /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+      //         )[1];
+      //         return packageName;
+      //       },
+      //     },
+      //   },
+
+      // Create own strategy for code splitting
+      chunks: "all",
+      maxSize: Infinity,
+      minSize: 2000,
+      cacheGroups: {
+        // jquery: {
+        //   test: /[\\/]node_modules[\\/]jquery[\\/]/,
+        //   name: "jquery",
+        //   priority: 2,
+        // },
+        // bootstrap: {
+        //   test: /[\\/]node_modules[\\/]bootstrap[\\/]/,
+        //   name: "bootstrap",
+        // },
+        lodash: {
+          test: /[\\/]node_modules[\\/]lodash-es[\\/]/,
+          name: "lodash-es",
+          priority: 2,
+        },
+        node_modules: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "node_modules",
+          chunks: "initial",
+        },
+        async: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: "async",
+          name(module, chunks) {
+            return chunks.map((chunk) => chunk.name).join("-");
+          },
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -99,6 +176,10 @@ module.exports = merge(common, {
       paths: glob.sync(`${path.join(__dirname, "../src")}/**/*`, {
         nodir: true,
       }),
+    }),
+    new CompressionPlugin({
+      algorithm: "gzip",
+      test: /\.(js|css)$/,
     }),
   ],
 });
